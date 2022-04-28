@@ -49,23 +49,27 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const background = "#ffffff"
-    ctx.fillStyle = "backgorund";
+    ctx.fillStyle = "background";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    
-    canvas.addEventListener("mousemove" , doPainting);
+    var mobile = (/Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i).test(navigator.userAgent || navigator.vendor || window.opera);
 
     let painting = false;
     let x = 0;
     let y = 0;
 
     function startPainting(e){
+        e.preventDefault();
         painting = true;
     }
     function stopPainting(e) {
+        e.preventDefault();
         painting = false;
     }
-
+    canvas.addEventListener("touchmove", doPainting ,false);
+    canvas.addEventListener("touchstart", startPainting, false);
+    canvas.addEventListener("touchend", stopPainting, false);
+    
     canvas.addEventListener("mousemove", doPainting);
     canvas.addEventListener("mousedown", startPainting);
     canvas.addEventListener("mouseleave", stopPainting);
@@ -79,29 +83,40 @@
 
     // 그리기
     function doPainting(e) {
+        e.preventDefault();
         x = e.offsetX
         y = e.offsetY
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+        var touches = e.changedTouches;
+        console.log(touches);
         console.log(x,y);
-        if (painting === true){
+
+        if (!mobile && painting === true){
             ctx.lineTo(x, y);
             ctx.stroke();
+        } else {
+            ctx.beginPath();
+            ctx.moveTo(x,y);
+        }   
+        
+        if(mobile && painting === true) {
+            ctx.lineTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
+            ctx.stroke();
+        } else {
+            ctx.lineTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
+            ctx.beginPath();
         }
-     else {
-        ctx.beginPath();
-        ctx.moveTo(x,y);
-    }
 }
     // 브러시 색 변경
     const colorBtn = document.querySelectorAll(".color");
     colorBtn.forEach(color => {
         color.addEventListener("click", function(){
-            let currentColor = color.style.backgroundColor
-            ctx.strokeStyle = currentColor
-            ctx.fillStyle = currentColor
-            console.log(ctx.strokeStyle)
-            console.log(ctx.fillStyle)
+            let currentColor = color.style.backgroundColor;
+            ctx.strokeStyle = currentColor;
+            ctx.fillStyle = currentColor;
+            console.log(ctx.strokeStyle);
+            console.log(ctx.fillStyle);
         });
     });
 
@@ -111,7 +126,7 @@
     rangeBtn.addEventListener("change", function(e){
         let currentWidth = e.target.value;
         ctx.lineWidth = currentWidth;
-        console.log(ctx.lineWidth)
+        console.log(ctx.lineWidth);
     });
 
     // 색 채우기
@@ -138,6 +153,7 @@
 
     mode.addEventListener("click", modeChange)
     canvas.addEventListener("click", handleCanvasClick)
+    canvas.addEventListener("touchstart", handleCanvasClick)
     // 색 채우기
 
     const del = document.querySelector(".delete");
@@ -155,7 +171,7 @@
         const link = document.createElement("a");
         link.href = image;
         link.download = "Paint"
-        link.click()
+        link.click();
     }
 
     saveBtn.addEventListener("click", handleSave);
