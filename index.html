@@ -69,6 +69,7 @@
     canvas.addEventListener("touchmove", doPainting ,false);
     canvas.addEventListener("touchstart", startPainting, false);
     canvas.addEventListener("touchend", stopPainting, false);
+    canvas.addEventListener("touchcancel", stopPainting, false);
     
     canvas.addEventListener("mousemove", doPainting);
     canvas.addEventListener("mousedown", startPainting);
