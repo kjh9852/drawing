@@ -104,7 +104,7 @@
             ctx.lineTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
             ctx.stroke();
         } else {
-            ctx.lineTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
+            ctx.moveTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
             ctx.beginPath();
         }
 }
@@ -153,6 +153,7 @@
 
     mode.addEventListener("click", modeChange)
     canvas.addEventListener("click", handleCanvasClick)
+
     canvas.addEventListener("touchstart", handleCanvasClick)
     // 색 채우기
 
