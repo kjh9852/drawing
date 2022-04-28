@@ -65,16 +65,18 @@
     function stopPainting(e) {
         e.preventDefault();
         painting = false;
+        ctx.closePath();
     }
-    canvas.addEventListener("touchmove", doPainting ,false);
-    canvas.addEventListener("touchstart", startPainting, false);
+
+    canvas.addEventListener("touchmove", MobilePainting ,false);
+    canvas.addEventListener("touchstart", touchMove, false);
     canvas.addEventListener("touchend", stopPainting, false);
     canvas.addEventListener("touchcancel", stopPainting, false);
     
-    // canvas.addEventListener("mousemove", doPainting);
-    // canvas.addEventListener("mousedown", startPainting);
-    // canvas.addEventListener("mouseleave", stopPainting);
-    // canvas.addEventListener("mouseup", stopPainting);
+    canvas.addEventListener("mousemove", doPainting);
+    canvas.addEventListener("mousedown", startPainting);
+    canvas.addEventListener("mouseleave", stopPainting);
+    canvas.addEventListener("mouseup", stopPainting);
 
     canvas.width = 400;
     canvas.height = 400;
@@ -89,26 +91,35 @@
         y = e.offsetY
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        var touches = e.changedTouches;
-        console.log(touches);
-        console.log(x,y);
-
-        // if (!mobile && painting === true){
-        //     ctx.lineTo(x, y);
-        //     ctx.stroke();
-        // } else {
-        //     ctx.beginPath();
-        //     ctx.moveTo(x,y);
-        // }   
-        
-        if(mobile && painting === true) {
-            ctx.lineTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
+        console.log(painting);
+        if (painting === true){
+            ctx.lineTo(x, y);
             ctx.stroke();
-        } else {
-            ctx.moveTo(touches[0].pageX - canvas.offsetLeft ,touches[0].pageY - canvas.offsetTop);
-            ctx.beginPath();
-        }
+        } 
 }
+    function MobilePainting(e) {
+        e.preventDefault();
+        var touches = e.changedTouches;
+        x = touches[0].pageX - canvas.offsetLeft;
+        y = touches[0].pageY - canvas.offsetTop
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        console.log(painting);
+        if(painting === true) {
+            ctx.lineTo(x,y);
+            ctx.stroke();
+        }
+    }
+    function touchMove(e) {
+        e.preventDefault();
+        var touches = e.changedTouches;
+        x = touches[0].pageX - canvas.offsetLeft;
+        y = touches[0].pageY - canvas.offsetTop
+        painting = true;
+        ctx.moveTo(x, y);
+        ctx.beginPath();
+    }
     // 브러시 색 변경
     const colorBtn = document.querySelectorAll(".color");
     colorBtn.forEach(color => {
