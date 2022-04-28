@@ -95,7 +95,10 @@
         if (painting === true){
             ctx.lineTo(x, y);
             ctx.stroke();
-        } 
+        } else {
+            ctx.moveTo(x, y);
+            ctx.beginPath();
+        }
 }
     function MobilePainting(e) {
         e.preventDefault();
@@ -120,6 +123,7 @@
         ctx.moveTo(x, y);
         ctx.beginPath();
     }
+    
     // 브러시 색 변경
     const colorBtn = document.querySelectorAll(".color");
     colorBtn.forEach(color => {
